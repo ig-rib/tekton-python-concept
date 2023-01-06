@@ -1,9 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from dotenv import load_dotenv
-
-load_dotenv()
 
 SQLALCHEMY_DATABASE_URL = "postgresql://test_user:test_password@concept-db:5432/concept_db"
 
@@ -21,17 +18,9 @@ from sqlalchemy.ext.declarative import as_declarative, declared_attr
 class_registry: t.Dict = {}
 
 
-@as_declarative(class_registry=class_registry)
-class Base:
-    id: t.Any
-    __name__: str
+Base = declarative_base()
 
-    # Generate __tablename__ automatically
-    @declared_attr
-    def __tablename__(cls) -> str:
-        return cls.__name__.lower()
-
-def get_db():
+def get_db() -> t.Generator:
     db = SessionLocal()
     try:
         yield db
