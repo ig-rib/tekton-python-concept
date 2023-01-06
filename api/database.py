@@ -5,7 +5,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-SQLALCHEMY_DATABASE_URL = f"postgresql://test_user:test_password@db:5432/concept_db"
+SQLALCHEMY_DATABASE_URL = "postgresql://test_user:test_password@concept-db:5432/concept_db"
+
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL
