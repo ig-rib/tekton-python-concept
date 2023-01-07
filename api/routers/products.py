@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from api.database import get_db
+from api.database.database import get_db
 from api.models.product import ProductDAO
 
 

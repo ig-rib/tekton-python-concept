@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
-from api.database import Base
+from api.database.database import Base
 
 class ProductDAO(Base):
 
