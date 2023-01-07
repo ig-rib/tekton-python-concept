@@ -10,8 +10,10 @@ class BaseRepository:
 
     def save(self, model):
         entity_dao = self.__model_to_dao__(model)
+        print(entity_dao)
         self.db.add(entity_dao)
         self.db.commit()
+        return self.__dao_to_model__(entity_dao)
 
     def __dao_to_model__(self, dao):
         raise NotImplementedError()

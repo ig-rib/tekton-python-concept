@@ -1,7 +1,9 @@
 
 import json
 from fastapi import Depends, HTTPException
-from api.interfaces.editProductInterface import EditProductInterface
+from api.interfaces.create_product_interface import CreateProductInterface
+from api.interfaces.edit_product_interface import EditProductInterface
+from api.interfaces.product import Product
 from api.repository.productRepository import ProductsRepository
 from api.repository.productRepository import get_products_repository
 
@@ -23,16 +25,28 @@ class ProductsService:
 
     def edit_product(self, id, params: EditProductInterface):
         product = self.get_product_by_id(id)
+        
         if params.name: product.name = params.name
         if params.description: product.description = params.description
         if params.status: product.status = params.status
         if params.stock: product.stock = params.stock
         if params.price: product.price = params.price
 
-        self.products_repository.save(product)
+        updated_product = self.products_repository.save(product)
+        return updated_product
 
-        
+    def create_product(self, params: CreateProductInterface):
+        new_product_model = Product(
+            id=None,
+            name=params.name,
+            status=params.status,
+            stock=params.stock,
+            description=params.description,
+            price=params.price
+        )
 
+        new_product = self.products_repository.save(new_product_model)
+        return new_product
 
 def get_products_service(products_repository: ProductsRepository = Depends(get_products_repository)) -> ProductsService:
     return ProductsService(products_repository)

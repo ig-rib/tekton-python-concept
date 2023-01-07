@@ -1,8 +1,7 @@
 from typing import Optional
 from pydantic import BaseModel
 
-class Product(BaseModel):
-    id: Optional[int]
+class CreateProductInterface(BaseModel):
     name: str
     status: str
     stock: int
