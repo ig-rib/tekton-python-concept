@@ -1,8 +1,10 @@
 
 import json
+from typing import Optional
 from fastapi import Depends, HTTPException
 from api.interfaces.create_product_interface import CreateProductInterface
 from api.interfaces.edit_product_interface import EditProductInterface
+from api.interfaces.list_interfaces import SearchableListInterface
 from api.interfaces.product import Product
 from api.repository.productRepository import ProductsRepository
 from api.repository.productRepository import get_products_repository
@@ -15,8 +17,8 @@ class ProductsService:
         print('Initializing products service with products repository')
         self.products_repository = products_repository
 
-    def get_products(self):
-        return self.products_repository.find_all()
+    def get_products(self, filters: Optional[SearchableListInterface]):
+        return self.products_repository.find_all(filters.limit, filters.offset, filters.q)
 
     def get_product_by_id(self, id):
         product = self.products_repository.find_by_id(id)

@@ -26,7 +26,7 @@ class BaseRepository:
         return self.__dao_to_model__(entity_dao)
 
     def find_all(self, limit=None, offset=None):
-        entity_daos = self.db.query(self.__entity_type__).all()
+        entity_daos = self.db.query(self.__entity_type__).offset(offset, limit).all()
         return [self.__dao_to_model__(entity_dao) for entity_dao in entity_daos]
 
     def delete_by_id(self, id_):

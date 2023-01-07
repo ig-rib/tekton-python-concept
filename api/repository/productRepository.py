@@ -35,6 +35,15 @@ class ProductsRepository(BaseRepository):
             stock=model.stock
         )
 
+    def find_all(self, limit: int, offset: int, q: str=None):
+        ids_query = self.db.query(self.__entity_type__)
+        if q:
+            ids_query = ids_query.filter(self.__entity_type__.name.ilike(q))
+        ids = [x.id for x in ids_query.with_entities(self.__entity_type__.id).offset(offset).limit(limit).all()]
+        aux_query = self.db.query(self.__entity_type__)
+        entity_daos = aux_query.filter(ProductDAO.id.in_(ids)).all()
+        return [self.__dao_to_model__(entity_dao) for entity_dao in entity_daos]
+
     def get_transaction(self):
         return self.db.get_transaction()
 
