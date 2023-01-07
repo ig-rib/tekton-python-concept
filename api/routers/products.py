@@ -2,9 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from api.interfaces.edit_product_interface import EditProductInterface
 from api.interfaces.create_product_interface import CreateProductInterface
-from api.data_access_objects.product import ProductDAO
 from api.services.products import ProductsService, get_products_service
-
 
 products_router = APIRouter()
 

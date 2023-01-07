@@ -19,7 +19,7 @@ depends_on = None
 def upgrade():
     op.create_table("products",
                     sa.Column('id', sa.Integer, primary_key=True, index=True),
-                    sa.Column('name', sa.String(256), nullable=False),
+                    sa.Column('name', sa.String(256), nullable=False, unique=True),
                     sa.Column('status', sa.Integer, nullable=False),
                     sa.Column('stock', sa.Integer, nullable=False),
                     sa.Column('description', sa.String(1024), nullable=True),
