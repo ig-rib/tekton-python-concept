@@ -8,15 +8,24 @@ class BaseRepository:
     def __init__(self, db: Session):
         self.db = db
 
-    def save(self, entity):
-        self.db.add(entity)
+    def save(self, model):
+        entity_dao = self.__model_to_dao__(model)
+        self.db.add(entity_dao)
         self.db.commit()
 
+    def __dao_to_model__(self, dao):
+        raise NotImplementedError()
+
+    def __model_to_dao__(self, model):
+        raise NotImplementedError()
+
     def find_by_id(self, id_):
-        return self.db.query(self.__entity_type__).filter(self.__entity_type__.id == id_).first()
+        entity_dao = self.db.query(self.__entity_type__).filter(self.__entity_type__.id == id_).first()
+        return self.__dao_to_model__(entity_dao)
 
     def find_all(self, limit=None, offset=None):
-        return self.db.query(self.__entity_type__).all()
+        entity_daos = self.db.query(self.__entity_type__).all()
+        return [self.__dao_to_model__(entity_dao) for entity_dao in entity_daos]
 
     def delete_by_id(self, id_):
         return self.db.query(self.__entity_type__).filter(self.__entity_type__.id == id_).remove()
