@@ -1,0 +1,264 @@
+openapi: 3.0.3
+
+info:
+  description: "This is the documentation for Tekton Python Concept API. No authentication is required."
+  version: 1.0.0
+  title: Tekton Python Concept API
+  contact:
+    email: ignacio.ribaslyp@gmail.com
+
+tags:
+  - name: Products
+    description: CRUD endpoints for Products
+  - name: Healthcheck
+    description: Healthcheck endpoints
+
+paths:
+  /healthcheck:
+    get:
+      tags:
+        - Healthcheck
+      summary: API Healthcheck
+      description: This endpoint allows clients to check the health of the API
+      operationId: main-healthcheck
+      responses:
+        200:
+          description: Current API health status retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthCheck'
+
+  /products:
+    get:
+      summary: List products
+      description: List products
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/SearchQuery'
+      responses:
+        200:
+          description: 200 - OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProductsList'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      summary: Create product
+      description: Create a product
+      requestBody:
+        $ref: '#/components/requestBodies/CreateProduct'
+      responses:
+        422:
+          description: 422 - UNPROCESSABLE_ENTITY
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/FieldValidationUnprocessableEntityError'
+                  - type: object
+                    properties:
+                      detail:
+                        type: string
+                        default: Entity with name X already exists
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /products/{id}:
+    get:
+      summary: Get product by id
+      description: Get product by id
+      parameters:
+        - $ref: '#/components/parameters/ResourceId'
+      responses:
+        200:
+          description: 200 - OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    patch:
+      summary: Edit product
+      description: Edit product of given id
+      requestBody:
+        $ref: '#/components/requestBodies/EditProduct'
+      parameters:
+        - $ref: '#/components/parameters/ResourceId'
+      responses:
+        202:
+          description: 202 - Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        422:
+          $ref: '#/components/responses/FieldValidationUnprocessableEntityError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+
+components:
+
+  parameters:
+    ResourceId:
+      name: id
+      in: path
+      description: Resource id
+      required: true
+      schema:
+          $ref: '#/components/schemas/PositiveInteger'
+
+
+  schemas:
+
+    PositiveInteger:
+      type: integer
+      minimum: 1
+      default: 1
+
+    HealthCheck:
+      properties:
+        status: 
+          type: string
+          default: OK
+
+    FieldValidationUnprocessableEntityError:
+      type: object
+      properties:
+        detail:
+          type: array
+          items:
+            type: object
+            properties:
+              loc:
+                type: array
+                items:
+                  type: string
+              msg:
+                type: string
+              type:
+                type: string
+
+    Product:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/PositiveInteger'
+        name:
+          type: string
+          default: Product Name
+        status:
+          type: string
+          enum: [ ACTIVE, INACTIVE ]
+        stock:
+          type: integer
+          minimum: 0
+          default: 0
+        description:
+          type: string
+          default: Product description
+        price:
+          $ref: '#/components/schemas/PositiveInteger'
+
+    PaginatedProductsList:
+      type: object
+      properties:
+        page:
+          $ref: '#/components/schemas/PositiveInteger'
+        limit:
+          $ref: '#/components/schemas/PositiveInteger'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+
+  requestBodies:
+
+    CreateProduct:
+      required: true
+      content:
+        application/json:
+          schema:
+            properties:
+              name:
+                type: string
+                default: Product Name
+              status:
+                type: string
+                default: ACTIVE
+              stock:
+                type: integer
+                minimum: 0
+                default: 0
+              description:
+                type: string
+                default: Product description
+              price:
+                $ref: '#/components/schemas/PositiveInteger'
+            required:
+              - name
+              - status
+              - stock
+              - price
+
+    EditProduct:
+      required: true
+      content:
+        application/json:
+          schema:
+            properties:
+              name:
+                type: string
+                default: Product Name
+              status:
+                type: string
+                default: ACTIVE
+              stock:
+                type: integer
+                minimum: 0
+                default: 0
+              description:
+                type: string
+                default: Product description
+              price:
+                $ref: '#/components/schemas/PositiveInteger'
+
+  responses:
+    NotFoundError:
+      description: 404 - NOT_FOUND
+      content:
+          application/json:
+              schema:
+                  type: object
+                  properties:
+                      message:
+                          type: string
+                          default: Resource not found
+                      code:
+                          type: string
+                          default: NOT_FOUND
+    FieldValidationUnprocessableEntityError:
+      description: 422 - UNPROCESSABLE_ENTITY
+      content:
+        application/json:
+            schema:
+              $ref: '#/components/schemas/FieldValidationUnprocessableEntityError'
+    InternalServerError:
+      description: 500 - INTERNAL_SERVER_ERROR
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              detail:
+                type: string
+                default: Internal Server Error
