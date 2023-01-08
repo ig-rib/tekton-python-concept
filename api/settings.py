@@ -1,9 +1,13 @@
 from pydantic import BaseSettings
 
 class Settings(BaseSettings):
-    postgres_user: str
-    postgres_password: str
-    postgres_database: str
+    db_user: str
+    db_password: str
+    db_name: str
+    db_port: int
+    db_host: str
+    redis_host: str
+    redis_port: int
     discounts_api_base: str
 
     class Config:

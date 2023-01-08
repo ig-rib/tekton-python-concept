@@ -1,8 +1,11 @@
 from sqlalchemy import create_engine
+from api.settings import Settings
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-SQLALCHEMY_DATABASE_URL = "postgresql://test_user:test_password@concept-db:5432/concept_db"
+settings = Settings()
+
+SQLALCHEMY_DATABASE_URL = f"postgresql://{settings.db_user}:{settings.db_password}@{settings.db_host}:{settings.db_port}/{settings.db_name}"
 
 
 engine = create_engine(

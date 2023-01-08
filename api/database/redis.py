@@ -1,7 +1,10 @@
 import redis
+from api.settings import Settings
+
+settings = Settings()
 
 redis_db =  redis.Redis(
-    host= 'concept-cache', port='6379'
+    host= settings.redis_host, port=settings.redis_port
 )
 
 
