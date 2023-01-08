@@ -7,9 +7,7 @@ from fastapi import FastAPI, Request
 from api.routers.healthchecks import healthchecks_router
 from api.routers.products import products_router
 
-
 app = FastAPI(title='Products API')
-
 
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
@@ -22,3 +20,4 @@ async def add_process_time_header(request: Request, call_next):
     
 app.include_router(healthchecks_router, prefix="/healthcheck")
 app.include_router(products_router, prefix="/products")
+

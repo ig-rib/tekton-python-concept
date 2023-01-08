@@ -1,24 +1,31 @@
 
 from fastapi import Depends
+import redis
 from api.database.database import get_db
 from api.data_access_objects.product import ProductDAO
 from api.interfaces.product import Product
 from api.repository.baseRepository import BaseRepository
 from sqlalchemy.orm import Session
+from api.database.redis import get_redis_db, set_dictionary_values
+
 
 class ProductsRepository(BaseRepository):
     
-    def __init__(self, db: Session=Depends(get_db)):
+    def __init__(self, db: Session=Depends(get_db), redis_db: redis.Redis=Depends(get_redis_db)):
         super().__init__(db=db)
         self.__entity_type__ = ProductDAO
+        self.redis_db = redis_db
 
     def __dao_to_model__(self, dao: ProductDAO) -> Product:
         if not dao: return None
+        if not self.redis_db.hmget('status_names', keys=[dao.status])[0]:
+            set_dictionary_values()
+        status = self.redis_db.hmget('status_names',keys=[dao.status])[0]
         product_model: Product = Product(
             id = dao.id,
             name = dao.name,
             description = dao.description,
-            status = 'ACTIVE', # map status using cache
+            status = status, # map status using cache
             price = dao.price,
             stock = dao.stock
         )
@@ -36,6 +43,12 @@ class ProductsRepository(BaseRepository):
             stock=model.stock
         )
 
+    def count_all(self, q: str=None):
+        count_query = self.db.query(self.__entity_type__)
+        if q:
+            count_query = count_query.filter(self.__entity_type__.name.ilike(q))
+        return count_query.count()
+
     def find_all(self, limit: int, offset: int, q: str=None):
         ids_query = self.db.query(self.__entity_type__)
         if q:
@@ -52,5 +65,5 @@ class ProductsRepository(BaseRepository):
     def get_transaction(self):
         return self.db.get_transaction()
 
-def get_products_repository(db: Session = Depends(get_db)):
-    return ProductsRepository(db=db)
+def get_products_repository(db: Session = Depends(get_db), redis_db = Depends(get_redis_db)):
+    return ProductsRepository(db=db, redis_db=redis_db)
