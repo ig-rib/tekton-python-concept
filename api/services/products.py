@@ -18,7 +18,11 @@ class ProductsService:
         self.discounts_service = discounts_service
 
     def get_products(self, filters: Optional[SearchableListInterface]):
-        return self.products_repository.find_all(filters.limit, filters.offset, filters.q)
+        total_count = self.products_repository.count_all(filters.q)
+        products = self.products_repository.find_all(filters.limit, filters.offset, filters.q)
+        for product in products:
+            product.discount = self.discounts_service.get_discount(product.id)
+        return total_count, products
 
     def get_product_by_id(self, id):
         product = self.products_repository.find_by_id(id)

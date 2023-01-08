@@ -43,6 +43,12 @@ class ProductsRepository(BaseRepository):
             stock=model.stock
         )
 
+    def count_all(self, q: str=None):
+        count_query = self.db.query(self.__entity_type__)
+        if q:
+            count_query = count_query.filter(self.__entity_type__.name.ilike(q))
+        return count_query.count()
+
     def find_all(self, limit: int, offset: int, q: str=None):
         ids_query = self.db.query(self.__entity_type__)
         if q:

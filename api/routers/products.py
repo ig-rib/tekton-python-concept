@@ -17,8 +17,9 @@ def list_products(products_service: ProductsService = Depends(get_products_servi
         offset=limit * (page - 1),
         q=q
     )
-    products = products_service.get_products(list_parameters)
-    return { "products": products, "page": page, "limit": limit }
+    total_count, products = products_service.get_products(list_parameters)
+    print(products)
+    return CompleteProductSerializer().serialize_paginated_list(products, page, limit, total_count)
 
 @products_router.get("/{id}", status_code=200)
 def get_product(id: int, products_service: ProductsService = Depends(get_products_service)):
