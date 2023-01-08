@@ -12,7 +12,16 @@ services:
     depends_on:
       - db
       - redis-cache
+      - mock-api
 
+  mock-api:
+    container_name: discounts-api
+    build:
+      context: .
+      dockerfile: mocker-api/Dockerfile.dev
+    ports:
+      - "5000:5000"
+      
   db:
     image: postgres:14.2-alpine
     container_name: concept-db
