@@ -5,6 +5,7 @@ from api.interfaces.edit_product_interface import EditProductInterface
 from api.interfaces.create_product_interface import CreateProductInterface
 from api.interfaces.list_interfaces import SearchableListInterface
 from api.serializers.complete_product_serializer import CompleteProductSerializer
+from api.serializers.product_serialzier import ProductSerializer
 from api.services.products import ProductsService, get_products_service
 
 products_router = APIRouter()
@@ -27,9 +28,9 @@ def get_product(id: int, products_service: ProductsService = Depends(get_product
 @products_router.patch("/{id}", status_code=202)
 def update_product(id: int, product_params: EditProductInterface, products_service: ProductsService = Depends(get_products_service)):
     updated_product = products_service.edit_product(id, product_params)
-    return updated_product
+    return ProductSerializer().serialize(updated_product)
 
 @products_router.post("/", status_code=201)
 def create_product(product_params: CreateProductInterface, products_service: ProductsService = Depends(get_products_service)):
     updated_product = products_service.create_product(product_params)
-    return updated_product
+    return ProductSerializer().serialize(updated_product)
