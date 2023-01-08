@@ -1,8 +1,13 @@
-from redis_om import get_redis_connection
-    
-redis_db = get_redis_connection(
-    host= 'concept-cache', port='6739'
-    )
+import redis
 
-redis_db.set('hi', 'hi')
-print(redis_db.get('hi'))
+redis_db =  redis.Redis(
+    host= 'concept-cache', port='6379'
+)
+
+
+def get_redis_db():
+    return redis_db
+
+def set_dictionary_values():
+    redis_db.hmset('status_names', {0: 'Inactive', 1: 'Active'})
+    redis_db.expire('status_names', time=300)
