@@ -14,7 +14,6 @@ class ProductsService:
     products_repository: ProductsRepository
 
     def __init__(self, products_repository: ProductsRepository):
-        print('Initializing products service with products repository')
         self.products_repository = products_repository
 
     def get_products(self, filters: Optional[SearchableListInterface]):
