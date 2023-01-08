@@ -30,11 +30,10 @@ services:
     container_name: concept-cache
     ports:
       - "6739:6739"
-    command: redis-server --requirepass $REDIS_PASSWORD
-    environment:
-      - REDIS_PASSWORD=test_password
+    command: redis-server --appendonly yes
     volumes:
-      - redis-data:/redis-data
+      - redis-data:/data
+  
 
 volumes:
   db-data:

@@ -14,11 +14,14 @@ class ProductsRepository(BaseRepository):
 
     def __dao_to_model__(self, dao: ProductDAO) -> Product:
         if not dao: return None
+        status_dict = {0:'a', 1:'b'}
+        # if not status_dict:
+        #     set_dictionary_values()
         product_model: Product = Product(
             id = dao.id,
             name = dao.name,
             description = dao.description,
-            status = 'ACTIVE', # map status using cache
+            status = status_dict[dao.status], # map status using cache
             price = dao.price,
             stock = dao.stock
         )

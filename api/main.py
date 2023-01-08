@@ -10,7 +10,6 @@ from api.routers.products import products_router
 
 app = FastAPI(title='Products API')
 
-
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
     start_time = time.time()
@@ -22,3 +21,5 @@ async def add_process_time_header(request: Request, call_next):
     
 app.include_router(healthchecks_router, prefix="/healthcheck")
 app.include_router(products_router, prefix="/products")
+
+from api.database.redis import redis_db
