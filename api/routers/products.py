@@ -1,10 +1,10 @@
 import math
 from typing import Optional
 from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
 from api.interfaces.edit_product_interface import EditProductInterface
 from api.interfaces.create_product_interface import CreateProductInterface
 from api.interfaces.list_interfaces import SearchableListInterface
+from api.serializers.complete_product_serializer import CompleteProductSerializer
 from api.services.products import ProductsService, get_products_service
 
 products_router = APIRouter()
@@ -22,7 +22,7 @@ def list_products(products_service: ProductsService = Depends(get_products_servi
 @products_router.get("/{id}", status_code=200)
 def get_product(id: int, products_service: ProductsService = Depends(get_products_service)):
     product = products_service.get_product_by_id(id)
-    return product
+    return CompleteProductSerializer().serialize(product)
 
 @products_router.patch("/{id}", status_code=202)
 def update_product(id: int, product_params: EditProductInterface, products_service: ProductsService = Depends(get_products_service)):

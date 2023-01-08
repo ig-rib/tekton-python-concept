@@ -8,3 +8,5 @@ class Product(BaseModel):
     stock: int
     description: Optional[str]
     price: int
+    discount: Optional[int]
+
