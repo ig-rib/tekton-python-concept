@@ -13,6 +13,7 @@ class ProductsRepository(BaseRepository):
         self.__entity_type__ = ProductDAO
 
     def __dao_to_model__(self, dao: ProductDAO) -> Product:
+        if not dao: return None
         product_model: Product = Product(
             id = dao.id,
             name = dao.name,
@@ -25,7 +26,7 @@ class ProductsRepository(BaseRepository):
         return product_model
 
     def __model_to_dao__(self, model: Product) -> ProductDAO:
-        
+        if not model: return None
         return ProductDAO(
             id=model.id,
             name=model.name,
@@ -43,6 +44,10 @@ class ProductsRepository(BaseRepository):
         aux_query = self.db.query(self.__entity_type__)
         entity_daos = aux_query.filter(ProductDAO.id.in_(ids)).all()
         return [self.__dao_to_model__(entity_dao) for entity_dao in entity_daos]
+
+    def find_by_name(self, name: str):
+        product = self.db.query(self.__entity_type__).filter(self.__entity_type__.name == name).first()
+        return self.__dao_to_model__(product)
 
     def get_transaction(self):
         return self.db.get_transaction()
