@@ -17,7 +17,7 @@ def list_products(products_service: ProductsService = Depends(get_products_servi
         q=q
     )
     products = products_service.get_products(list_parameters)
-    return { "products": products, "page": page, "limit": limit }
+    return { "items": products, "page": page, "limit": limit }
 
 @products_router.get("/{id}", status_code=200)
 def get_product(id: int, products_service: ProductsService = Depends(get_products_service)):

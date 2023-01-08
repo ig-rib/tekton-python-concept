@@ -39,7 +39,7 @@ class ProductsService:
     def create_product(self, params: CreateProductInterface):
         existing_product = self.products_repository.find_by_name(params.name)
         if existing_product:
-            raise HTTPException(status_code=400, detail=f'Product with name {params.name} already exists.')
+            raise HTTPException(status_code=422, detail=f'Product with name {params.name} already exists.')
         new_product_model = Product(
             id=None,
             name=params.name,
