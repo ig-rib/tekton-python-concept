@@ -33,13 +33,13 @@ class ProductsService:
 
     def edit_product(self, id, params: EditProductInterface):
         product = self.get_product_by_id(id)
-        
-        if params.name: product.name = params.name
-        if params.description: product.description = params.description
-        if params.status: product.status = params.status
-        if params.stock: product.stock = params.stock
-        if params.price: product.price = params.price
-
+        print(product)
+        if params.name != None: product.name = params.name
+        if params.description != None: product.description = params.description
+        if params.status != None: product.status = params.status
+        if params.stock != None: product.stock = params.stock
+        if params.price != None: product.price = params.price
+        print(product)
         updated_product = self.products_repository.update(product)
         return updated_product
 
