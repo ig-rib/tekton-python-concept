@@ -33,7 +33,6 @@ SQLALCHEMY_DATABASE_URL = f"postgresql://{settings.test_db_user}:{settings.test_
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL
 )
-# Use connect_args parameter only with sqlite
 SessionTesting = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
