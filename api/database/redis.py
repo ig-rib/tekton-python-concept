@@ -1,5 +1,5 @@
 import redis
-from api.settings import Settings
+from settings import Settings
 
 settings = Settings()
 

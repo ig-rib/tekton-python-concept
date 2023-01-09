@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine
-from api.settings import Settings
+from settings import Settings
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -14,12 +14,6 @@ engine = create_engine(
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 import typing as t
-
-from sqlalchemy.ext.declarative import as_declarative, declared_attr
-
-
-class_registry: t.Dict = {}
-
 
 Base = declarative_base()
 

@@ -1,6 +1,6 @@
 from fastapi import Depends
 from requests import request
-from api.settings import Settings, get_settings
+from settings import Settings, get_settings
 
 
 class DiscountsService:
