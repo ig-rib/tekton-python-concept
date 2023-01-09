@@ -26,20 +26,22 @@ class ProductsService:
 
     def get_product_by_id(self, id):
         product = self.products_repository.find_by_id(id)
-        product.discount = self.discounts_service.get_discount(id)
         if not product:
             raise HTTPException(status_code=404, detail=f'Product not found for id {id}')
+        product.discount = self.discounts_service.get_discount(id)
         return product
 
     def edit_product(self, id, params: EditProductInterface):
         product = self.get_product_by_id(id)
-        print(product)
-        if params.name != None: product.name = params.name
+        if params.name != None:
+            existing_product = self.products_repository.find_by_name(params.name)
+            if existing_product:
+                raise HTTPException(status_code=422, detail=f'Product with name {params.name} already exists.')
+            product.name = params.name
         if params.description != None: product.description = params.description
         if params.status != None: product.status = params.status
         if params.stock != None: product.stock = params.stock
         if params.price != None: product.price = params.price
-        print(product)
         updated_product = self.products_repository.update(product)
         return updated_product
 
