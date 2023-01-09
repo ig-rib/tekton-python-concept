@@ -1,5 +1,7 @@
 import json
 
+from api.data_access_objects.product import ProductDAO
+
 def test_create_product(client):
     data = {
         "name": "TV",
@@ -13,14 +15,15 @@ def test_create_product(client):
     assert response.json()["name"] == "TV"
     assert response.json()["id"] != None
 
-def test_create_repeated_product(client):
-    existing_product = {
-        "name": "TV",
-        "status": 0,
-        "stock": 54,
-        "description": "No need to go to the cinema",
-        "price": 100000
-    }
+def test_create_repeated_product(client, db_session):
+    existing_product = ProductDAO(
+        name="TV",
+        status=0,
+        stock=54,
+        description="No need to go to the cinema",
+        price=100000
+    )
+    db_session.add(existing_product)
     data = {
         "name": "TV",
         "status": 1,
@@ -28,7 +31,6 @@ def test_create_repeated_product(client):
         "description": "Just a TV",
         "price": 1000
     }
-    client.post('/products/',content=json.dumps(existing_product))
     response = client.post("/products/",content=json.dumps(data))
     assert response.status_code == 422
 
