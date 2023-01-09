@@ -40,7 +40,7 @@ class ProductsService:
         if params.stock: product.stock = params.stock
         if params.price: product.price = params.price
 
-        updated_product = self.products_repository.save(product)
+        updated_product = self.products_repository.update(product)
         return updated_product
 
     def create_product(self, params: CreateProductInterface):

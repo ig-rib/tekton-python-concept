@@ -60,9 +60,9 @@ def db_session(app: FastAPI) -> Generator[SessionTesting, Any, None]:
 class RedisMockConnection:
     def __init__(self):
         self.dict = {}
-    def hset(self, key, value):
+    def hmset(self, key, value):
         self.dict[key] = value
-    def hget(self, key, keys):
+    def hmget(self, key, keys):
         if key not in self.dict: return [None]
         return [self.dict[key].get(_k) for _k in keys]
     def expire(self, key, time):
