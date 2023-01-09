@@ -17,8 +17,9 @@ class BaseRepository:
 
     def update(self, model):
         entity_dao = self.__model_to_dao__(model)
-        self.db.flush(entity_dao)
+        self.db.merge(entity_dao)
         self.db.commit()
+        return self.__dao_to_model__(entity_dao)
 
     def __dao_to_model__(self, dao):
         raise NotImplementedError()
