@@ -1,11 +1,11 @@
 FROM python:3.10
 RUN pip3 install uvicorn
-COPY .env alembic.ini log.ini settings.py ./usr/
-WORKDIR /usr
-COPY ./requirements.txt /usr/requirements.txt
-RUN pip install --no-cache-dir --upgrade -r /usr/requirements.txt
-COPY ./api /usr/api
-COPY ./tests /usr/tests
-COPY ./alembic /usr/alembic
+COPY .env alembic.ini log.ini settings.py ./usr/fastapi-concept/
+WORKDIR /usr/fastapi-concept
+COPY ./requirements.txt /usr/fastapi-concept/requirements.txt
+RUN pip install --no-cache-dir --upgrade -r /usr/fastapi-concept/requirements.txt
+COPY ./api /usr/fastapi-concept/api
+COPY ./tests /usr/fastapi-concept/tests
+COPY ./alembic /usr/fastapi-concept/alembic
 CMD alembic upgrade head && uvicorn api.main:app --host 0.0.0.0 --port 8080 --reload 
 #--log-config log.ini

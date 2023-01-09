@@ -8,19 +8,19 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from api.database.database import Base, get_db
-from api.routers.healthchecks import healthchecks_router
-from api.routers.products import products_router
 
 import sys
 import os
 
-from settings import Settings
-
-settings = Settings()
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) 
-#this is to include backend dir in sys.path so that we can import from db,main.
+#this is to include backend dir in sys.path so that we can import from api directory.
+from settings import Settings
+settings = Settings()
+from api.database.database import Base, get_db
+from api.database.redis import get_redis_db
+from api.routers.healthchecks import healthchecks_router
+from api.routers.products import products_router
 
 def start_application():
     app = FastAPI()
@@ -29,9 +29,9 @@ def start_application():
     return app
 
 
-SQLALCHEMY_DATABASE_URL = f"postgresql://{Settings.test_db_user}:{settings.test_db_password}@{settings.test_db_host}:{settings.test_db_port}/{settings.test_db_name}"
+SQLALCHEMY_DATABASE_URL = f"postgresql://{settings.test_db_user}:{settings.test_db_password}@{settings.test_db_host}:{settings.test_db_port}/{settings.test_db_name}"
 engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+    SQLALCHEMY_DATABASE_URL
 )
 # Use connect_args parameter only with sqlite
 SessionTesting = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -58,10 +58,25 @@ def db_session(app: FastAPI) -> Generator[SessionTesting, Any, None]:
     transaction.rollback()
     connection.close()
 
+class RedisMockConnection:
+    def __init__(self):
+        self.dict = {}
+    def hset(self, key, value):
+        self.dict[key] = value
+    def hget(self, key, keys):
+        if key not in self.dict: return [None]
+        return [self.dict[key].get(_k) for _k in keys]
+    def expire(self, key, time):
+        return None
+
+@pytest.fixture(scope="function")
+def mock_cache(app: FastAPI) -> Generator[SessionTesting, Any, None]:
+    cache = RedisMockConnection()
+    yield cache
 
 @pytest.fixture(scope="function")
 def client(
-    app: FastAPI, db_session: SessionTesting
+    app: FastAPI, db_session: SessionTesting, mock_cache: RedisMockConnection
 ) -> Generator[TestClient, Any, None]:
     """
     Create a new FastAPI TestClient that uses the `db_session` fixture to override
@@ -74,6 +89,13 @@ def client(
         finally:
             pass
 
+    def _get_redis_db():
+        try:
+            yield mock_cache
+        finally:
+            pass
+
     app.dependency_overrides[get_db] = _get_test_db
+    app.dependency_overrides[get_redis_db] = _get_redis_db
     with TestClient(app) as client:
         yield client
