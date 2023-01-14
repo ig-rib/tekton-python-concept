@@ -110,5 +110,4 @@ Unit tests are defined at the router level and are implemented using pytest, a P
 In the test configuration (`$project_root/tests/conftest.py`), DB dependencies are replaced by custom ones.
 
 - In the case of the Products DB, a dedicated tests DB is used (that is, the db is not mocked, following unit testing best practices), and it is created before and destroyed after each test, as specified in the app fixture.
-- In the case of the Cache, it is replaced by a mock class that has the same interface as the Redis SDK for Python (`hmget` and `hmset` functions).
-
+- In the case of the Cache, it is replaced by a mock class that has the same interface as the Redis SDK for Python (`get` and `set` functions).
