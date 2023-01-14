@@ -18,10 +18,10 @@ class ProductsRepository(BaseRepository):
 
     def __dao_to_model__(self, dao: ProductDAO) -> Product:
         if not dao: return None
-        if not self.redis_db.hmget('status_names', keys=[dao.status])[0]:
-            self.redis_db.hmset('status_names', {0: 'Inactive', 1: 'Active'})
-            self.redis_db.expire('status_names', time=300)
-        status = self.redis_db.hmget('status_names',keys=[dao.status])[0]
+        status = self.redis_db.get(f'{dao.id}-status')
+        if not status: ## ie we have a cache miss
+            status = 'Active' if dao.status == 1 else 'Inactive'
+            self.redis_db.set(f'{dao.id}-status', status, ex=300)
         product_model: Product = Product(
             id = dao.id,
             name = dao.name,
