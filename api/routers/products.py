@@ -5,7 +5,7 @@ from api.interfaces.edit_product_interface import EditProductInterface
 from api.interfaces.create_product_interface import CreateProductInterface
 from api.interfaces.list_interfaces import SearchableListInterface
 from api.serializers.complete_product_serializer import CompleteProductSerializer
-from api.serializers.product_serialzier import ProductSerializer
+from api.serializers.product_serializer import ProductSerializer
 from api.services.products import ProductsService, get_products_service
 
 products_router = APIRouter()

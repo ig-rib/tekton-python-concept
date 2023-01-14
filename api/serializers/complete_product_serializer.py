@@ -3,7 +3,7 @@ from typing import Optional
 from pydantic import BaseModel
 from api.interfaces.product import Product
 from api.serializers.base_serializer import BaseSerializer
-from api.serializers.product_serialzier import ProductDTO
+from api.serializers.product_serializer import ProductDTO
 
 
 class CompleteProductSerializer(BaseSerializer):
