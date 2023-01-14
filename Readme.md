@@ -96,6 +96,8 @@ Indexes:
 
 ## Redis Cache
 
+Following what's stated in point 2.2 in the Challenge document, Redis is used as a cache for values related to product status names (strings) based on the numeric status field.
+In this case, the one interpretation that seemed to make the most sense was the need to store pairs <product id, status name>, and give them an expiration time of at least 5 minutes (that is, 300 seconds). The value of any product's id would then be obtained using the cache. This is more like a caching POC, it's not like there was any advantage in using the cache at this stage anyways.
 
 # Tests
 

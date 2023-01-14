@@ -19,14 +19,14 @@ class ProductsRepository(BaseRepository):
     def __dao_to_model__(self, dao: ProductDAO) -> Product:
         if not dao: return None
         status = self.redis_db.get(f'{dao.id}-status')
-        if not status: ## ie we have a cache miss
+        if not status: ## ie we have a cache miss, so we must update the cache values
             status = 'Active' if dao.status == 1 else 'Inactive'
             self.redis_db.set(f'{dao.id}-status', status, ex=300)
         product_model: Product = Product(
             id = dao.id,
             name = dao.name,
             description = dao.description,
-            status = status, # map status using cache
+            status = status,
             price = dao.price,
             stock = dao.stock
         )
@@ -39,7 +39,7 @@ class ProductsRepository(BaseRepository):
             id=model.id,
             name=model.name,
             description=model.description,
-            status=1,# map status using cache
+            status=1,
             price=model.price,
             stock=model.stock
         )

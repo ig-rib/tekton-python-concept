@@ -7,5 +7,4 @@ RUN pip install --no-cache-dir --upgrade -r /usr/fastapi-concept/requirements.tx
 COPY ./api /usr/fastapi-concept/api
 COPY ./tests /usr/fastapi-concept/tests
 COPY ./alembic /usr/fastapi-concept/alembic
-CMD alembic upgrade head && uvicorn api.main:app --host 0.0.0.0 --port 8080 --reload 
-#--log-config log.ini
+CMD alembic upgrade head && uvicorn api.main:app --host 0.0.0.0 --port 8080 --reload --log-config log.ini

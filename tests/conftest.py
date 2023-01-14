@@ -67,6 +67,10 @@ class RedisMockConnection:
         return [self.dict[key].get(_k) for _k in keys]
     def expire(self, key, time):
         return None
+    def set(self, key, value, ex=None):
+        self.dict[key] = value
+    def get(self, key):
+        return self.dict.get(key, None)
 
 @pytest.fixture(scope="function")
 def mock_cache(app: FastAPI) -> Generator[SessionTesting, Any, None]:
