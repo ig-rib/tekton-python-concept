@@ -55,7 +55,7 @@ def test_create_products_with_missing_fields(client):
 def test_update_product(client, db_session):
     product_1 = ProductDAO(
         name= "TV",
-        status= 0,
+        status= 1,
         stock= 54,
         description= "Simple appliance",
         price= 100000
@@ -64,7 +64,7 @@ def test_update_product(client, db_session):
     db_session.commit()
     db_session.refresh(product_1)
     editable_data = {
-        "status": 1,
+        "status": 'Active',
         "stock": 0,
         "description": "Simple appliance - or maybe not so simple",
         "price": 200000
@@ -72,14 +72,14 @@ def test_update_product(client, db_session):
     response = client.patch(f"/products/{product_1.id}", content=json.dumps(editable_data))
     assert response.status_code == 202
     edited_product = db_session.query(ProductDAO).filter(ProductDAO.id == product_1.id).first()
-    assert edited_product.status == editable_data["status"]
+    assert edited_product.status == 1
     assert edited_product.stock == editable_data["stock"]
     assert edited_product.description == editable_data["description"]
     assert edited_product.price == editable_data["price"]
 
 def test_update_non_existent_product(client):
     editable_data = {
-        "status": 1,
+        "status": 'Active',
         "stock": 0,
         "description": "Simple appliance - or maybe not so simple",
         "price": 200000
@@ -110,7 +110,7 @@ def test_update_product_with_conflicting_name(client, db_session):
     db_session.refresh(product_2)
     editable_data = {
         "name": "TV",
-        "status": 1,
+        "status": 'Active',
         "stock": 0,
         "description": "Simple appliance - or maybe not so simple",
         "price": 200000

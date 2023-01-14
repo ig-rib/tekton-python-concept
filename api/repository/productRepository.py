@@ -6,7 +6,7 @@ from api.data_access_objects.product import ProductDAO
 from api.interfaces.product import Product
 from api.repository.baseRepository import BaseRepository
 from sqlalchemy.orm import Session
-from api.database.redis import get_redis_db, set_dictionary_values
+from api.database.redis import get_redis_db
 
 
 class ProductsRepository(BaseRepository):
