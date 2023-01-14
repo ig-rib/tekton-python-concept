@@ -18,6 +18,10 @@ This will run four containers, as specified in `compose.yaml`:
 - Relational DB (PostgreSQL): This relational DB stores product data and allows Products API to perform queries on it.
 - Cache (Redis): This cache is used to store a dictionary of status names, as specified in point 2.2 of the Challenge document.
 
+## Teardown
+
+Run `docker-compose down` in the root directory to delete all the resources associated to this project.
+
 # Containerized Services
 
 The use of docker-compose and containers in this app allows for a really easy setup and teardown of all of the services involved. This is especially useful for a local Proof of Concept, but it could also easily be deployed to production if needed.
